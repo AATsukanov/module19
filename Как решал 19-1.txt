@@ -1,0 +1,22 @@
+*************************************
+*   19.1:  Решал так:               *
+*************************************
+
+.venv/scripts/activate
+pip install django
+django-admin startproject Module19
+cd Module19
+python manage.py startapp task1
+
+В settings.py в список INSTALLED_APPS добавляем 'task1'.
+
+В task1/models.py добавляем модели...
+
+python manage.py makemigrations
+python manage.py migrate
+
+проверяем все через DB Browser...
+
+#python manage.py runserver
+
+Alexey A.Tsukanov, 03.12.2024
