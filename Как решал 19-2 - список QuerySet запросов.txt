@@ -1,0 +1,21 @@
+Список QuerySet запросов в порядке вызовов
+==========================================
+
+python manage.py shell
+from task1.models import Buyer, Game
+
+Buyer.objects.create(name='Алёша Попович', balance=5000, age=9)
+Buyer.objects.create(name='Василий Волшебный', balance=999999, age=99)
+Buyer.objects.create(name='Стрёмный покупатель', balance=0, age=18)
+
+Game.objects.create(title='Герои III', cost=690, size=1024, description='стратегия без ограничения по возрасту', age_limited=False)
+Game.objects.create(title='Gothic II', cost=1690, size=4096, description='ролевая игра, продолжение игры "Готика"', age_limited=True)
+Game.objects.create(title='Carmageddon', cost=1290, size=2048, description='симулятор гонок без правил', age_limited=True)
+
+buyer1 = Buyer.objects.get(id=1)
+buyer2 = Buyer.objects.get(id=2)
+buyer3 = Buyer.objects.get(id=3)
+
+Game.objects.get(id=1).buyer.set((buyer1, buyer2, buyer3))
+Game.objects.get(id=2).buyer.set((buyer2, buyer3))
+Game.objects.get(id=3).buyer.set((buyer2,))
