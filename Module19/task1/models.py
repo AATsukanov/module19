@@ -20,6 +20,7 @@ class Game(models.Model):
     # мноегие-ко-многим:
     buyer = models.ManyToManyField(Buyer, related_name='game')
 
+
     def __str__(self):
         return self.title
 
