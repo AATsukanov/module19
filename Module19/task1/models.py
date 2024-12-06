@@ -17,9 +17,8 @@ class Game(models.Model):
     size = models.DecimalField(max_digits=12, decimal_places=3)
     description = models.TextField()
     age_limited = models.BooleanField(default=False)
-    # мноегие-ко-многим:
+    # многие-ко-многим:
     buyer = models.ManyToManyField(Buyer, related_name='game')
-
 
     def __str__(self):
         return self.title
@@ -46,3 +45,11 @@ buyer - покупатель обладающий игрой (ManyToManyField).
 DecimalField - поле для дробных чисел.
 BooleanField - поле для булевых значений."""
 
+# ДЛЯ ЗАДАЧИ 19.4:
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    date = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f'{self.title}, {self.date}'

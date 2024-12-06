@@ -1,0 +1,106 @@
+Домашнее задание по теме "Пагинация"
+
+Ваша задача:
+ 1) Создайте приложение Django с моделью, содержащей некоторую информацию
+(например, блог с постами). Затем, реализуйте просмотр (view), который будет выводить
+все объекты модели на нескольких страницах с помощью встроенного класса Paginator.
+Используйте контекст (context) для передачи данных в шаблон (template), который будет
+отображать пагинацию внизу страницы.
+
+ 2) Измените предыдущее задание так, чтобы вместо стандартного вывода
+пагинации (например, "1 2 3 4 следующая") вы могли бы создать свой собственный
+шаблон пагинации. Добавьте стили и обеспечьте возможность пользователю выбирать
+количество элементов на странице с помощью выпадающего списка.
+
+Решал так:
+
+1) python manage.py startapp task5
+
+2) в settings.py -- НЕ РАБОТАЕТ:
+INSTALLED_APPS = [
+    # ...
+    'django.core.paginator',  # добавляем пагинатор
+    # ...
+] -- НЕ РАБОТАЕТ
+
+3) в task5/models.py:
+
+from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+4) в task5/views.py:
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from .models import Post
+
+def post_list(request):
+    # получаем все посты
+    posts = Post.objects.all()
+
+    # создаем пагинатор
+    paginator = Paginator(posts, 10)  # 10 постов на странице
+
+    # получаем номер страницы, на которую переходит пользователь
+    page_number = request.GET.get('page')
+
+    # получаем посты для текущей страницы
+    page_posts = paginator.get_page(page_number)
+
+    # передаем контекст в шаблон
+    return render(request, 'post_list.html', {'page_posts': page_posts})
+
+5) В templates/ создаем папку task_19-5,
+создаем в ней простой base.html:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task5: Posts with Paginator</title>
+</head>
+<body>
+    {% block content %}
+    <p>(здесь будет список постов...)</p>
+    {% endblock %}
+</body>
+</html>
+
+6) В templates/ еще создаем post_list.html:
+
+<!-- post_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Список постов</h1>
+    <ul>
+        {% for post in page_posts %}
+            <li>
+                {{ post.title }} ({{ post.created_at }})
+                <p>{{ post.content }}</p>
+            </li>
+        {% empty %}
+            <p>Нет постов.</p>
+        {% endfor %}
+    </ul>
+    <!-- показываем пагинатор -->
+    <div class="pagination">
+        <p>Страницы:</p>
+        <ul>
+            {% if page_posts.has_previous %}
+                <li><a href="?page=1"><<</a></li>
+                <li><a href="?page={{ page_posts.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li>{{ page_posts.number }}/{{ paginator.num_pages }}</li>
+            {% if page_posts.has_next %}
+                <li><a href="?page={{ page_posts.next_page_number }}">Next</a></li>
+                <li><a href="?page={{ paginator.num_pages }}">>>></a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+7)

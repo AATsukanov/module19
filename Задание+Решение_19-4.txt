@@ -1,0 +1,84 @@
+Домашнее задание по теме "Сайт администрирования"
+
+Подумайте и проанализируйте следующие вопросы:
+
+Заполнить свои таблицы данными на тестовом сайте https://sqliteonline.com/ используя sql запросы.
+Пример и синтаксис запроса на заполнение таблицы:
+     INSERT INTO ИМЯ_ТАБЛИЦЫ (столбец1, столбец2, столбец3,... столбец N)  VALUES (значение1, значение2, значение3,... значение N);
+Создать несколько объектов в базе данных DJANGO приложения по примеру из лекции используя object.create.
+Используя запросы в базу данных измените один из элементов статьи: заголовок, содержание.
+Пример изменения заголовка статьи post:
+>>> post.title = 'New title'
+>>> post.save()
+В этом примере метод save() будет преобразован в SQL-выражение UPDATE.
+Создайте запрос на получение всех объектов из базы данных и выполните его.
+Удалите один из объектов базы данных с мощью метода delete().
+Пример запрос для получения всех объектов:
+>>> all_posts = Post.objects.all()
+>>> Post.objects.all()
+С помощью метода filter() осуществите фильтрацию по объектам в базе данных.
+Например, статьи опубликованные в 2024 году, либо статьи созданные пользователем админ.
+Пример запроса: Post.objects.filter(Критерий для фильтра)
+
+РЕШЕНИЕ
+
+Создание таблицы (в онлайн-сервисе https://sqliteonline.com/):
+
+CREATE TABLE IF NOT EXISTS TableTask19 (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+title VARCHAR(128) NOT NULL,
+content TEXT,
+date TEXT
+);
+
+Заполнение таблицы (в онлайн-сервисе https://sqliteonline.com/):
+
+INSERT INTO TableTask19 (title, content, date)
+VALUES ('Article-1', 'Energy and structure of bonds in the interaction of organic anions with layered double hydroxide nanosheets.', '03/2024'),
+('Article-2', 'Simulation of the Rayleigh waves in the proximity of the scattering velocity heterogeneities.', '06/2024'),
+('Article-3', 'Exploring the capabilities of the microseismic sounding method.', '09/2024'),
+('Article-4', 'New features in the subsurface structure model of El Hierro Island from low-frequency microseismic sounding.', '12/2024');
+
+Вывод таблицы (в онлайн-сервисе https://sqliteonline.com/):
+
+SELECT * FROM TableTask19;
+
+Запускаем в консоли (InteractiveConsole):
+python manage.py shell
+>>> from task1.models import Post
+>>> Post.objects.create(title='Article-5', content='Crumpled aluminum hydroxide nanostructures as a microenvironment dysregulation agent for cancer treatment.')
+<Post: Post object (5)>
+
+>>> Post.objects.filter(id=5).update(title='New title')
+1
+
+Код на Python:
+from task1.models import Post
+Post.objects.create(title='Article-5', content='Crumpled aluminum hydroxide nanostructures as a microenvironment dysregulation agent for cancer treatment.')
+post = Post.objects.get(id=5)
+post.title = 'new post 5'
+post.save()
+
+Получение всех объектов и удаление:
+Запускаем в консоли (InteractiveConsole):
+python manage.py shell
+>>> Post.objects.all()
+<QuerySet [<Post: Post object (1)>, <Post: Post object (2)>, <Post: Post object (3)>, <Post: Post object (4)>, <Post: Post object (5)>]>
+>>> Post.objects.get(id=5).delete()
+(1, {'task1.Post': 1})
+
+Код на Python:
+all_posts = Post.objects.all()
+all_posts.delete()
+
+Фильтрация:
+Запускаем в консоли (InteractiveConsole):
+python manage.py shell
+(InteractiveConsole)
+>>> Post.objects.filter(id=1)
+<QuerySet [<Post: Post object (1)>]>
+>>> Post.objects.filter(title='Article-4')
+<QuerySet [<Post: Post object (4)>]>
+
+Код на Python:
+post_title = Post.objects.filter(title='Article-4')

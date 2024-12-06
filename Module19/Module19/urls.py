@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from task1.views import platform, games, cart, sign_up_by_html, sign_up_by_django
+from task5.views import post_list, post_list_with_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('cart/', cart),
     path('signup/', sign_up_by_html),
     path('signup_dj/', sign_up_by_django),
+    path('posts/', post_list),
+    path('posts_check/', post_list_with_check)
 ]
